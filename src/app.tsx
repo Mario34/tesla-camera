@@ -17,10 +17,10 @@ import {
   Spinner,
   Tooltip,
   Button,
-  Body1Strong,
+  Caption1Stronger,
 } from '@fluentui/react-components'
 
-import { Record24Regular, Code24Filled, BorderNone24Regular } from '@fluentui/react-icons'
+import { Record24Regular, Code24Filled, BookQuestionMark24Regular } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
   root: {
@@ -68,6 +68,7 @@ const useStyles = makeStyles({
     ...shorthands.gap('10px'),
   },
   link: {
+    color: 'inherit',
     '&:active': {
       color: 'inherit',
     },
@@ -180,13 +181,23 @@ function App() {
         <div className={styles.content}>
           <div className={styles.header}>
             <DirectoryAccess onAccess={onFileSystemAccess} />
-            <Tooltip content={<><Body1Strong>查看源代码</Body1Strong> 本项目不会上传您的隐私视频，并且接受公开的代码审查</>} relationship="label">
+            <Tooltip content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>} relationship="label">
               <Button
                 icon={
-                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera" target="__blank">
+                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera" rel="noreferrer" target="_blank">
                     <Code24Filled />
                   </a>
-              }
+                }
+                size="large"
+              />
+            </Tooltip>
+            <Tooltip content={<>问题反馈</>} relationship="label">
+              <Button
+                icon={
+                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera/issues/new?title=%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88" rel="noreferrer" target="_blank">
+                    <BookQuestionMark24Regular />
+                  </a>
+                }
                 size="large"
               />
             </Tooltip>
