@@ -15,9 +15,12 @@ import {
   Divider,
   tokens,
   Spinner,
+  Tooltip,
+  Button,
+  Body1Strong,
 } from '@fluentui/react-components'
 
-import { Record24Regular } from '@fluentui/react-icons'
+import { Record24Regular, Code24Filled, BorderNone24Regular } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
   root: {
@@ -61,6 +64,13 @@ const useStyles = makeStyles({
   },
   header: {
     ...shorthands.padding('20px'),
+    display: 'flex',
+    ...shorthands.gap('10px'),
+  },
+  link: {
+    '&:active': {
+      color: 'inherit',
+    },
   },
   player: {
     flexGrow: 1,
@@ -170,6 +180,16 @@ function App() {
         <div className={styles.content}>
           <div className={styles.header}>
             <DirectoryAccess onAccess={onFileSystemAccess} />
+            <Tooltip content={<><Body1Strong>查看源代码</Body1Strong> 本项目不会上传您的隐私视频，并且接受公开的代码审查</>} relationship="label">
+              <Button
+                icon={
+                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera" target="__blank">
+                    <Code24Filled />
+                  </a>
+              }
+                size="large"
+              />
+            </Tooltip>
           </div>
           <div className={styles.player}>
             {
