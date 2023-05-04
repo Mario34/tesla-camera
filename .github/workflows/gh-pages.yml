@@ -28,7 +28,7 @@ jobs:
         uses: dafnik/setup-node-pnpm@v1
 
       - name: install
-        run: pnpm i
+        run: pnpm install --no-frozen-lockfile
 
       - name: build
         run: pnpm build
