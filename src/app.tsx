@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   aside: {
-    width: '300px',
+    width: '350px',
     height: '100vh',
     backgroundColor: tokens.colorNeutralStroke3,
     display: 'flex',
@@ -133,6 +133,9 @@ function App() {
       setVideoLoading(false)
     }
   }
+  const videoList = state.list
+    .filter(({ type }) => type === filterType || filterType === TypeEnum.所有)
+    .sort((a, b) => b.time - a.time)
   return (
     <>
       <div className={styles.root}>
@@ -154,16 +157,13 @@ function App() {
               onCheckedValueChange={(_, data) => onSelectVideo(data.checkedItems[0])}
             >
               {
-                state.list
-                  .filter(({ type }) => type === filterType || filterType === TypeEnum.所有)
-                  .sort((a, b) => b.time - a.time)
-                  .map(({ title, time }) => (
-                    <div className={cln(styles.menuItem, { [styles.menuItemIsActive]: true })} key={time}>
-                      <MenuItemRadio icon={<Record24Regular />} name="video" value={String(time)}>{title}</MenuItemRadio>
-                    </div>
-                  ))
+                videoList.map(({ title, time }) => (
+                  <div className={cln(styles.menuItem, { [styles.menuItemIsActive]: true })} key={time}>
+                    <MenuItemRadio icon={<Record24Regular />} name="video" value={String(time)}>{title}</MenuItemRadio>
+                  </div>
+                ))
               }
-              {!state.list.length && <div className={styles.empty}>暂无数据</div>}
+              {!videoList.length && <div className={styles.empty}>暂无数据</div>}
             </MenuList>
           </div>
         </div>
