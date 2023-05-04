@@ -194,7 +194,7 @@ function App() {
             <Tooltip content={<>问题反馈</>} relationship="label">
               <Button
                 icon={
-                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera/issues/new?title=%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88" rel="noreferrer" target="_blank">
+                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera/issues/new?assignees=Mario34&labels=&template=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88.md&title=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88" rel="noreferrer" target="_blank">
                     <BookQuestionMark24Regular />
                   </a>
                 }
