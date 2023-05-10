@@ -1,17 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
 import cln from 'classnames'
-
 import { TypeEnum, type OriginVideo, type ModelState } from './model'
-
 import {
   makeStyles,
   shorthands,
   Tab,
   TabList,
-  MenuList,
-  MenuItemRadio,
   Divider,
   tokens,
   Spinner,
@@ -19,7 +15,6 @@ import {
   Button,
   Caption1Stronger,
 } from '@fluentui/react-components'
-
 import { Record24Regular, Code24Filled, BookQuestionMark24Regular } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
@@ -27,7 +22,7 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   aside: {
-    width: '350px',
+    width: '300px',
     height: '100vh',
     backgroundColor: tokens.colorNeutralStroke3,
     display: 'flex',
@@ -49,12 +44,29 @@ const useStyles = makeStyles({
     ...shorthands.padding('20px'),
     overflowY: 'auto',
     flexGrow: 1,
+    display: 'flex',
+    rowGap: '14px',
+    flexDirection: 'column',
   },
   menuItem: {
-    ...shorthands.padding('6px'),
+    ...shorthands.padding('6px', '16px'),
+    ...shorthands.borderRadius('4px'),
+    ...shorthands.transition('all', '120ms'),
+    backgroundColor: tokens.colorNeutralBackground1,
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    columnGap: '12px',
+    color: tokens.colorNeutralForeground1,
+    ':hover': {
+      color: tokens.colorCompoundBrandStrokePressed,
+    },
   },
   menuItemIsActive: {
-    color: 'red',
+    color: tokens.colorPaletteRedBorderActive,
+    ':hover': {
+      color: tokens.colorPaletteRedBorderActive,
+    },
   },
   content: {
     height: '100vh',
@@ -109,13 +121,23 @@ function App() {
     type: TypeEnum.所有,
     list: [],
   })
+  useEffect(() => {
+    document.onkeydown = (e: KeyboardEvent) => {
+      if (e.code == 'Space') {
+        e.preventDefault()
+      }
+    }
+    return () => {
+      document.onkeydown = null
+    }
+  }, [])
   function onFileSystemAccess(videos: OriginVideo[]) {
     setState({
       ...state,
       list: videos,
     })
   }
-  async function onSelectVideo(value: string) {
+  async function onSelectVideo(value: number) {
     if (state.current) {
       const {
         src_f, src_b, src_l, src_r,
@@ -125,10 +147,9 @@ function App() {
       URL.revokeObjectURL(src_l)
       URL.revokeObjectURL(src_r)
     }
-    const origin = state.list.find(({ time }) => String(time) === value)
+    const origin = state.list.find(({ time }) => time === value)
     if (!origin) return
     setVideoLoading(true)
-    console.log(origin)
     try {
       setState({
         ...state,
@@ -153,7 +174,10 @@ function App() {
         <div className={styles.aside}>
           <div>
             <div className={styles.tabWrap}>
-              <TabList selectedValue={filterType} onTabSelect={(_, data) => setFilterType(data.value as TypeEnum)}>
+              <TabList
+                selectedValue={filterType}
+                onTabSelect={(_, data) => setFilterType(data.value as TypeEnum)}
+              >
                 {
                   tabs.map(({ name, value }) => (
                     <Tab key={value} value={value}>{name}</Tab>
@@ -164,27 +188,42 @@ function App() {
             <Divider />
           </div>
           <div className={styles.menuWrap}>
-            <MenuList
-              onCheckedValueChange={(_, data) => onSelectVideo(data.checkedItems[0])}
-            >
-              {
-                videoList.map(({ title, time }) => (
-                  <div className={cln(styles.menuItem, { [styles.menuItemIsActive]: true })} key={time}>
-                    <MenuItemRadio icon={<Record24Regular />} name="video" value={String(time)}>{title}</MenuItemRadio>
-                  </div>
-                ))
-              }
-              {!videoList.length && <div className={styles.empty}>暂无数据</div>}
-            </MenuList>
+            {
+              videoList.map((item) => (
+                <div
+                  className={cln(styles.menuItem, { [styles.menuItemIsActive]: item.time === state.current?.time })}
+                  key={item.time}
+                  onClick={() => onSelectVideo(item.time)}
+                  onKeyDown={(e) => {
+                    e.preventDefault()
+                  }}
+                  onKeyUp={(e) => {
+                    e.preventDefault()
+                  }}
+                >
+                  <Record24Regular />
+                  {item.title}
+                </div>
+              ))
+            }
+            {!videoList.length && <div className={styles.empty}>暂无数据</div>}
           </div>
         </div>
         <div className={styles.content}>
           <div className={styles.header}>
             <DirectoryAccess onAccess={onFileSystemAccess} />
-            <Tooltip content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>} relationship="label">
+            <Tooltip
+              content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>}
+              relationship="label"
+            >
               <Button
                 icon={
-                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera" rel="noreferrer" target="_blank">
+                  <a
+                    className={styles.link}
+                    href="https://github.com/Mario34/tesla-camera"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     <Code24Filled />
                   </a>
                 }
@@ -194,7 +233,12 @@ function App() {
             <Tooltip content={<>问题反馈</>} relationship="label">
               <Button
                 icon={
-                  <a className={styles.link} href="https://github.com/Mario34/tesla-camera/issues/new?assignees=Mario34&labels=&template=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88.md&title=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88" rel="noreferrer" target="_blank">
+                  <a
+                    className={styles.link}
+                    href="https://github.com/Mario34/tesla-camera/issues/new?assignees=Mario34&labels=&template=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88.md&title=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     <BookQuestionMark24Regular />
                   </a>
                 }

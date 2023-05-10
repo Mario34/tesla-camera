@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   makeStyles,
   shorthands,
@@ -93,6 +93,39 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
   const [duration, setDuration] = useState(0)
   const videoRef = useRef<HTMLVideoElement>(null)
   const { delayPlay } = useDelayPlay()
+  useEffect(() => {
+    document.addEventListener('keyup', onKeyUp)
+    videoRef.current?.focus()
+    return () => {
+      document.addEventListener('keyup', onKeyUp)
+    }
+  }, [])
+  const onKeyUp = (e: KeyboardEvent) => {
+    e.preventDefault()
+    switch (e.code) {
+      case 'Space':
+        if (videoRef.current?.paused) {
+          play()
+        } else {
+          pause()
+        }
+        break
+      case 'KeyW':
+        onSelectCamera(CameraEnum.前)
+        break
+      case 'KeyS':
+        onSelectCamera(CameraEnum.后)
+        break
+      case 'KeyA':
+        onSelectCamera(CameraEnum.左)
+        break
+      case 'KeyD':
+        onSelectCamera(CameraEnum.右)
+        break
+      default:
+        //
+    }
+  }
   function onTimeupdate() {
     if (!videoRef.current) return
     if (videoRef.current.currentTime >= videoRef.current.duration) {
@@ -126,12 +159,12 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
       delayPlay(videoRef.current)
     }
   }
-  function onSelectCamera(val: CameraEnum, video: Video) {
+  function onSelectCamera(val: CameraEnum) {
     if (!videoRef.current) return
     setCurrentCamera(val)
     const prePaused = videoRef.current.paused
     videoRef.current.pause()
-    videoRef.current.src = getSrc(val, video)
+    videoRef.current.src = getSrc(val, props.video!)
     videoRef.current.currentTime = currentTime
     if (!prePaused) {
       delayPlay(videoRef.current)
@@ -163,7 +196,7 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
                     key={camera}
                     paused={paused}
                     src={getSrc(camera, props.video!)}
-                    onClick={() => onSelectCamera(camera, props.video!)}
+                    onClick={() => onSelectCamera(camera)}
                   />
                 ))
               }
