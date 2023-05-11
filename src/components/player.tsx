@@ -97,10 +97,10 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
     document.addEventListener('keyup', onKeyUp)
     videoRef.current?.focus()
     return () => {
-      document.addEventListener('keyup', onKeyUp)
+      document.removeEventListener('keyup', onKeyUp)
     }
   }, [])
-  const onKeyUp = (e: KeyboardEvent) => {
+  function onKeyUp(e: KeyboardEvent) {
     e.preventDefault()
     switch (e.code) {
       case 'Space':
@@ -124,6 +124,18 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
         break
       default:
         //
+    }
+  }
+  function onSelectCamera(val: CameraEnum) {
+    if (!videoRef.current) return
+    setCurrentCamera(val)
+    const prePaused = videoRef.current.paused
+    const currentTime = videoRef.current.currentTime
+    videoRef.current.pause()
+    videoRef.current.src = getSrc(val, props.video!)
+    videoRef.current.currentTime = currentTime
+    if (!prePaused) {
+      delayPlay(videoRef.current)
     }
   }
   function onTimeupdate() {
@@ -155,17 +167,6 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
     videoRef.current.pause()
     setCurrentTime(val)
     videoRef.current.currentTime = val
-    if (!prePaused) {
-      delayPlay(videoRef.current)
-    }
-  }
-  function onSelectCamera(val: CameraEnum) {
-    if (!videoRef.current) return
-    setCurrentCamera(val)
-    const prePaused = videoRef.current.paused
-    videoRef.current.pause()
-    videoRef.current.src = getSrc(val, props.video!)
-    videoRef.current.currentTime = currentTime
     if (!prePaused) {
       delayPlay(videoRef.current)
     }
