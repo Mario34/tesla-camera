@@ -13,6 +13,10 @@ jobs:
   deploy:
     if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -24,10 +28,12 @@ jobs:
         with:
           version: latest
 
-      - name: Build and Deploy
-        uses: JamesIves/github-pages-deploy-action@master
-        env:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-page
-          FOLDER: dist
-          BUILD_SCRIPT: pnpm install --no-frozen-lockfile && pnpm build
+      - name: Install and Build 🔧
+        run: |
+          pnpm install --no-frozen-lockfile
+          pnpm build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
