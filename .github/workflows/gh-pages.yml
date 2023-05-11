@@ -13,33 +13,21 @@ jobs:
   deploy:
     if: (!(github.event.action == 'closed' && github.event.pull_request.merged != true))
     runs-on: ubuntu-22.04
-    permissions:
-      contents: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: true
           fetch-depth: 0
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
-          hugo-version: '0.110.0'
+          version: latest
 
-      - name: setup node and pnpm
-        uses: dafnik/setup-node-pnpm@v1
-
-      - name: install
-        run: pnpm install --no-frozen-lockfile
-
-      - name: build
-        run: pnpm build
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+      - name: Build and Deploy
+        uses: JamesIves/github-pages-deploy-action@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-page
+          FOLDER: dist
+          BUILD_SCRIPT: pnpm install --no-frozen-lockfile && pnpm build
