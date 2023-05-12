@@ -16,10 +16,10 @@ export interface OriginVideo {
   title: string
   time: number
   type: TypeEnum
-  src_f: FileSystemHandle
-  src_b: FileSystemHandle
-  src_r: FileSystemHandle
-  src_l: FileSystemHandle
+  src_f: FileSystemFileHandle
+  src_b: FileSystemFileHandle
+  src_r: FileSystemFileHandle
+  src_l: FileSystemFileHandle
 }
 
 export interface Video {

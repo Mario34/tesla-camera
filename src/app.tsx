@@ -10,7 +10,6 @@ import {
   TabList,
   Divider,
   tokens,
-  Spinner,
   Tooltip,
   Button,
   Caption1Stronger,
@@ -116,7 +115,6 @@ const tabs = [
 function App() {
   const styles = useStyles()
   const [filterType, setFilterType] = useState(TypeEnum.所有)
-  const [videoLoading, setVideoLoading] = useState(false)
   const [state, setState] = useState<ModelState>({
     type: TypeEnum.所有,
     list: [],
@@ -149,21 +147,16 @@ function App() {
     }
     const origin = state.list.find(({ time }) => time === value)
     if (!origin) return
-    setVideoLoading(true)
-    try {
-      setState({
-        ...state,
-        current: {
-          ...origin,
-          src_f: URL.createObjectURL(await origin.src_f.getFile()),
-          src_b: URL.createObjectURL(await origin.src_b.getFile()),
-          src_l: URL.createObjectURL(await origin.src_l.getFile()),
-          src_r: URL.createObjectURL(await origin.src_r.getFile()),
-        },
-      })
-    } finally {
-      setVideoLoading(false)
-    }
+    setState({
+      ...state,
+      current: {
+        ...origin,
+        src_f: URL.createObjectURL(await origin.src_f.getFile()),
+        src_b: URL.createObjectURL(await origin.src_b.getFile()),
+        src_l: URL.createObjectURL(await origin.src_l.getFile()),
+        src_r: URL.createObjectURL(await origin.src_r.getFile()),
+      },
+    })
   }
   const videoList = state.list
     .filter(({ type }) => type === filterType || filterType === TypeEnum.所有)
@@ -247,11 +240,7 @@ function App() {
             </Tooltip>
           </div>
           <div className={styles.player}>
-            {
-              videoLoading
-                ? <Spinner appearance="primary" label="视频加载中" />
-                : <Player key={state.current?.time} video={state.current} />
-            }
+            <Player key={state.current?.time} video={state.current} />
           </div>
         </div>
       </div>
