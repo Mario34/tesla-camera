@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
+import FfmpegTerminal from './components/ffmpeg-terminal'
 import cln from 'classnames'
 import { TypeEnum, type OriginVideo, type ModelState } from './model'
 import {
@@ -14,7 +15,9 @@ import {
   Button,
   Caption1Stronger,
 } from '@fluentui/react-components'
-import { Record24Regular, Code24Filled, BookQuestionMark24Regular } from '@fluentui/react-icons'
+import {
+  Record24Regular, Code24Filled, BookQuestionMark24Regular, ClipboardCode24Regular,
+} from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
   root: {
@@ -147,14 +150,29 @@ function App() {
     }
     const origin = state.list.find(({ time }) => time === value)
     if (!origin) return
+    const [
+      src_f_file,
+      src_b_file,
+      src_l_file,
+      src_r_file,
+    ] = [
+      await origin.src_f.getFile(),
+      await origin.src_b.getFile(),
+      await origin.src_l.getFile(),
+      await origin.src_r.getFile(),
+    ]
     setState({
       ...state,
       current: {
         ...origin,
-        src_f: URL.createObjectURL(await origin.src_f.getFile()),
-        src_b: URL.createObjectURL(await origin.src_b.getFile()),
-        src_l: URL.createObjectURL(await origin.src_l.getFile()),
-        src_r: URL.createObjectURL(await origin.src_r.getFile()),
+        src_f: URL.createObjectURL(src_f_file),
+        src_f_name: src_f_file.name,
+        src_b: URL.createObjectURL(src_b_file),
+        src_b_name: src_b_file.name,
+        src_l: URL.createObjectURL(src_l_file),
+        src_l_name: src_l_file.name,
+        src_r: URL.createObjectURL(src_r_file),
+        src_r_name: src_r_file.name,
       },
     })
   }
@@ -238,6 +256,7 @@ function App() {
                 size="large"
               />
             </Tooltip>
+            <FfmpegTerminal video={state.current} />
           </div>
           <div className={styles.player}>
             <Player key={state.current?.time} video={state.current} />

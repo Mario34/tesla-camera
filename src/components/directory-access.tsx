@@ -13,8 +13,9 @@ interface DirectoryAccessProps {
 }
 
 interface VideoFile {
-  fs: FileSystemHandle
+  fs: FileSystemFileHandle
   path: string
+  dir: string
 }
 
 async function getDirFiles(fs: FileSystemDirectoryHandle, path = '') {
@@ -23,7 +24,7 @@ async function getDirFiles(fs: FileSystemDirectoryHandle, path = '') {
   for await (const fsHandle of fsHandles) {
     const currentPath = `${path}/${fsHandle.name}`
     if (fsHandle.kind === 'file') {
-      files.push({ fs: fsHandle, path: currentPath })
+      files.push({ fs: fsHandle, path: currentPath, dir: `${path}/` })
     }
     if (fsHandle.kind === 'directory') {
       files.push(...await getDirFiles(fsHandle, currentPath))
@@ -61,7 +62,7 @@ function nameToTitle(name: string): string {
 function convertFiles(videoFiles: VideoFile[]): OriginVideo[] {
   const reg = /^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}-.+/
   const videos: Record<string, Partial<OriginVideo>> = {}
-  videoFiles.forEach(({ fs, path }) => {
+  videoFiles.forEach(({ fs, path, dir }) => {
     if (!reg.test(fs.name)) {
       return
     }
@@ -72,6 +73,7 @@ function convertFiles(videoFiles: VideoFile[]): OriginVideo[] {
         title: nameToTitle(name),
         time: nameToTime(name),
         type: pathToType(path),
+        dir,
       }
       videos[name] = exists
     }
