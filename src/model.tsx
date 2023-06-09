@@ -16,20 +16,26 @@ export interface OriginVideo {
   title: string
   time: number
   type: TypeEnum
-  src_f: FileSystemHandle
-  src_b: FileSystemHandle
-  src_r: FileSystemHandle
-  src_l: FileSystemHandle
+  dir: string
+  src_f: FileSystemFileHandle
+  src_b: FileSystemFileHandle
+  src_r: FileSystemFileHandle
+  src_l: FileSystemFileHandle
 }
 
 export interface Video {
   title: string
   time: number
   type: TypeEnum
+  dir: string
   src_f: string
+  src_f_name: string
   src_b: string
+  src_b_name: string
   src_r: string
+  src_r_name: string
   src_l: string
+  src_l_name: string
 }
 
 export interface ModelState {

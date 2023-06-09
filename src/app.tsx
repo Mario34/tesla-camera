@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
+import FfmpegTerminal from './components/ffmpeg-terminal'
 import cln from 'classnames'
 import { TypeEnum, type OriginVideo, type ModelState } from './model'
 import {
@@ -10,12 +11,13 @@ import {
   TabList,
   Divider,
   tokens,
-  Spinner,
   Tooltip,
   Button,
   Caption1Stronger,
 } from '@fluentui/react-components'
-import { Record24Regular, Code24Filled, BookQuestionMark24Regular } from '@fluentui/react-icons'
+import {
+  Record24Regular, Code24Filled, BookQuestionMark24Regular, ClipboardCode24Regular,
+} from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
   root: {
@@ -116,7 +118,6 @@ const tabs = [
 function App() {
   const styles = useStyles()
   const [filterType, setFilterType] = useState(TypeEnum.所有)
-  const [videoLoading, setVideoLoading] = useState(false)
   const [state, setState] = useState<ModelState>({
     type: TypeEnum.所有,
     list: [],
@@ -149,21 +150,31 @@ function App() {
     }
     const origin = state.list.find(({ time }) => time === value)
     if (!origin) return
-    setVideoLoading(true)
-    try {
-      setState({
-        ...state,
-        current: {
-          ...origin,
-          src_f: URL.createObjectURL(await origin.src_f.getFile()),
-          src_b: URL.createObjectURL(await origin.src_b.getFile()),
-          src_l: URL.createObjectURL(await origin.src_l.getFile()),
-          src_r: URL.createObjectURL(await origin.src_r.getFile()),
-        },
-      })
-    } finally {
-      setVideoLoading(false)
-    }
+    const [
+      src_f_file,
+      src_b_file,
+      src_l_file,
+      src_r_file,
+    ] = [
+      await origin.src_f.getFile(),
+      await origin.src_b.getFile(),
+      await origin.src_l.getFile(),
+      await origin.src_r.getFile(),
+    ]
+    setState({
+      ...state,
+      current: {
+        ...origin,
+        src_f: URL.createObjectURL(src_f_file),
+        src_f_name: src_f_file.name,
+        src_b: URL.createObjectURL(src_b_file),
+        src_b_name: src_b_file.name,
+        src_l: URL.createObjectURL(src_l_file),
+        src_l_name: src_l_file.name,
+        src_r: URL.createObjectURL(src_r_file),
+        src_r_name: src_r_file.name,
+      },
+    })
   }
   const videoList = state.list
     .filter(({ type }) => type === filterType || filterType === TypeEnum.所有)
@@ -245,13 +256,10 @@ function App() {
                 size="large"
               />
             </Tooltip>
+            <FfmpegTerminal video={state.current} />
           </div>
           <div className={styles.player}>
-            {
-              videoLoading
-                ? <Spinner appearance="primary" label="视频加载中" />
-                : <Player key={state.current?.time} video={state.current} />
-            }
+            <Player key={state.current?.time} video={state.current} />
           </div>
         </div>
       </div>
