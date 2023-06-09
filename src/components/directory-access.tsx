@@ -6,16 +6,12 @@ import {
 } from '@fluentui/react-components'
 import { FolderAdd24Regular } from '@fluentui/react-icons'
 import dayjs from 'dayjs'
-import { type OriginVideo, TypeEnum } from '../model'
+import {
+  type OriginVideo, TypeEnum, type VideoFile, type EventJson,
+} from '../model'
 
 interface DirectoryAccessProps {
-  onAccess: (videos: OriginVideo[]) => void
-}
-
-interface VideoFile {
-  fs: FileSystemFileHandle
-  path: string
-  dir: string
+  onAccess: (accessFile: OriginVideo[]) => void
 }
 
 async function getDirFiles(fs: FileSystemDirectoryHandle, path = '') {
@@ -97,8 +93,26 @@ const DirectoryAccess: React.FC<React.PropsWithChildren<DirectoryAccessProps>> =
   async function onSelectFile() {
     const dirHandle = await window.showDirectoryPicker()
     const files = await getDirFiles(dirHandle)
-    const convert = convertFiles(files)
-    props.onAccess(convert)
+    const videos = convertFiles(files)
+    const eventsFiles = files.filter(({ path }) => /.+event.json$/.test(path))
+    let events: EventJson[] = []
+    for (let i = 0; i < eventsFiles.length; i++) {
+      const file = await eventsFiles[i].fs.getFile()
+      events.push(JSON.parse(await file.text()))
+    }
+    events = events.sort((a, b) => dayjs(a.timestamp).valueOf() - dayjs(b.timestamp).valueOf())
+    const newVideos = videos.sort((a, b) => a.time - b.time)
+    newVideos.forEach((item, vIndex) => {
+      const eIndex = events.findIndex(({ timestamp }) => item.time > dayjs(timestamp).valueOf())
+      if (eIndex > -1) {
+        const event = events[eIndex]
+        events.splice(eIndex, 1)
+        if (newVideos[vIndex - 1]) {
+          newVideos[vIndex - 1].event = dayjs(event.timestamp).valueOf()
+        }
+      }
+    })
+    props.onAccess(newVideos)
   }
   return (
     <Tooltip content={<>选择车载U盘中的<Body1Strong>TeslaCam</Body1Strong>目录，或者是<Body1Strong>TeslaCam</Body1Strong>文件目录的拷贝</>} relationship="label">
