@@ -3,7 +3,7 @@ import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
 import FfmpegTerminal from './components/ffmpeg-terminal'
 import cln from 'classnames'
-import { TypeEnum, type OriginVideo, type ModelState } from './model'
+import { TypeEnum, type ModelState, type OriginVideo } from './model'
 import {
   makeStyles,
   shorthands,
@@ -14,9 +14,10 @@ import {
   Tooltip,
   Button,
   Caption1Stronger,
+  Badge,
 } from '@fluentui/react-components'
 import {
-  Record24Regular, Code24Filled, BookQuestionMark24Regular, ClipboardCode24Regular,
+  Record24Regular, Code24Filled, BookQuestionMark24Regular,
 } from '@fluentui/react-icons'
 
 const useStyles = makeStyles({
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   aside: {
-    width: '300px',
+    width: '320px',
     height: '100vh',
     backgroundColor: tokens.colorNeutralStroke3,
     display: 'flex',
@@ -121,6 +122,7 @@ function App() {
   const [state, setState] = useState<ModelState>({
     type: TypeEnum.所有,
     list: [],
+    events: [],
   })
   useEffect(() => {
     document.onkeydown = (e: KeyboardEvent) => {
@@ -214,6 +216,7 @@ function App() {
                 >
                   <Record24Regular />
                   {item.title}
+                  {item.event ? <Badge color="danger" size="extra-small" /> : null}
                 </div>
               ))
             }

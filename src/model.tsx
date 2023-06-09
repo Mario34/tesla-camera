@@ -21,6 +21,7 @@ export interface OriginVideo {
   src_b: FileSystemFileHandle
   src_r: FileSystemFileHandle
   src_l: FileSystemFileHandle
+  event?: number
 }
 
 export interface Video {
@@ -42,4 +43,20 @@ export interface ModelState {
   type: TypeEnum
   current?: Video
   list: OriginVideo[]
+  events: VideoFile[]
+}
+
+export interface VideoFile {
+  fs: FileSystemFileHandle
+  path: string
+  dir: string
+}
+
+export interface EventJson {
+  timestamp: string
+  city: string
+  est_lat: string
+  est_lon: string
+  reason: string
+  camera: string
 }
