@@ -59,7 +59,7 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
         return props.video?.src_f_name
     }
   }
-  const terminal = `${ffmpegPath} -y -i ${sourceRoot}${props.video.dir}${getFileName(camera)} -vf "drawtext=fontsize=52:fontcolor=yellow:box=1:boxcolor=black@0.6:text='%{pts\\:localtime\\:${props.video.time / 1000}}'" ${exportPath}/${getFileName(camera)}`
+  const terminal = props.video ? `${ffmpegPath} -y -i ${sourceRoot}${props.video.dir}${getFileName(camera)} -vf "drawtext=fontsize=52:fontcolor=yellow:box=1:boxcolor=black@0.6:text='%{pts\\:localtime\\:${props.video?.time / 1000}}'" ${exportPath}/${getFileName(camera)}` : ''
   return props.video ? (
     <Dialog modalType="non-modal">
       <DialogTrigger>
