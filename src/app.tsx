@@ -51,6 +51,10 @@ const useStyles = makeStyles({
     rowGap: '14px',
     flexDirection: 'column',
   },
+  eventTag: {
+    flexGrow: '1',
+    textAlign: 'right',
+  },
   menuItem: {
     ...shorthands.padding('6px', '16px'),
     ...shorthands.borderRadius('4px'),
@@ -216,7 +220,9 @@ function App() {
                 >
                   <Record24Regular />
                   {item.title}
-                  {item.event ? <Badge color="danger" size="extra-small" /> : null}
+                  <div className={styles.eventTag}>
+                    {item.event ? <Badge color="danger" size="extra-small" /> : null}
+                  </div>
                 </div>
               ))
             }
