@@ -88,7 +88,7 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
             </Field>
             <Field label="原始文件根目录">
               <Input
-                placeholder="请输入原始文件根目录（绝对路径）"
+                placeholder="请输入原始文件根目录（path/../TeslaCam）"
                 value={sourceRoot}
                 onInput={(e) => {
                   localStorage.setItem('sourceRoot', e.target.value)
@@ -98,7 +98,7 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
             </Field>
             <Field label="ffmpeg路径">
               <Input
-                placeholder="请输入ffmpeg路径（绝对路径）"
+                placeholder="请输入ffmpeg路径（path/../ffmpeg）"
                 value={ffmpegPath}
                 onInput={(e) => {
                   localStorage.setItem('ffmpegPath', e.target.value)
@@ -108,7 +108,7 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
             </Field>
             <Field label="导出文件地址">
               <Input
-                placeholder="导出文件地址（绝对路径）"
+                placeholder="导出文件地址（path/../export）"
                 value={exportPath}
                 onInput={(e) => {
                   localStorage.setItem('exportPath', e.target.value)
