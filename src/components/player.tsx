@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   makeStyles,
   shorthands,
@@ -60,6 +60,12 @@ const useStyles = makeStyles({
   empty: {
 
   },
+  playFocusInput: {
+    opacity: 0,
+    position: 'fixed',
+    top: '-100vh',
+    left: '-100vw',
+  },
 })
 
 interface PlayerProps {
@@ -92,15 +98,9 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
   const [paused, setPaused] = useState(true)
   const [duration, setDuration] = useState(0)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const inputIsFocus = useRef(false)
   const { delayPlay } = useDelayPlay()
-  useEffect(() => {
-    document.addEventListener('keyup', onKeyUp)
-    videoRef.current?.focus()
-    return () => {
-      document.removeEventListener('keyup', onKeyUp)
-    }
-  }, [])
-  function onKeyUp(e: KeyboardEvent) {
+  function onKeyUp(e: Parameters<React.KeyboardEventHandler>[0]) {
     e.preventDefault()
     switch (e.code) {
       case 'Space':
@@ -123,7 +123,7 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
         onSelectCamera(CameraEnum.右)
         break
       default:
-        //
+      //
     }
   }
   function onSelectCamera(val: CameraEnum) {
@@ -171,62 +171,79 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
       delayPlay(videoRef.current)
     }
   }
+  function onPlayFocus() {
+    inputIsFocus.current = true
+  }
+  function onPlayBlur() {
+    inputIsFocus.current = false
+  }
   return (
     <div className={styles.root}>
       {
         props.video ? (
           <>
-            <div className={styles.videoWrap}>
-              <video
-                muted
-                className={styles.video}
-                ref={videoRef}
-                onLoadedMetadata={onLoadedMetadata}
-                onPause={() => setPaused(true)}
-                onPlay={() => setPaused(false)}
-                onTimeUpdate={onTimeupdate}
-              >
-                <source src={getSrc(currentCamera, props.video)} type="video/mp4" />
-              </video>
-              {
-                [CameraEnum.前, CameraEnum.后, CameraEnum.左, CameraEnum.右].map(camera => (
-                  <MiniPlay
-                    camera={camera}
-                    currentTime={currentTime}
-                    isActive={currentCamera === camera}
-                    key={camera}
-                    paused={paused}
-                    src={getSrc(camera, props.video!)}
-                    onClick={() => onSelectCamera(camera)}
-                  />
-                ))
-              }
-              <div className={styles.time}>
-                {dayjs(props.video.time + currentTime * 1000).format('YYYY年MM月DD日 HH:mm:ss')}
+            <label htmlFor="player-focus-input">
+              <div className={styles.videoWrap}>
+                <video
+                  muted
+                  className={styles.video}
+                  id="player"
+                  ref={videoRef}
+                  onLoadedMetadata={onLoadedMetadata}
+                  onPause={() => setPaused(true)}
+                  onPlay={() => setPaused(false)}
+                  onTimeUpdate={onTimeupdate}
+                >
+                  <source src={getSrc(currentCamera, props.video)} type="video/mp4" />
+                </video>
+                {
+                  [CameraEnum.前, CameraEnum.后, CameraEnum.左, CameraEnum.右].map(camera => (
+                    <MiniPlay
+                      camera={camera}
+                      currentTime={currentTime}
+                      isActive={currentCamera === camera}
+                      key={camera}
+                      paused={paused}
+                      src={getSrc(camera, props.video!)}
+                      onClick={() => onSelectCamera(camera)}
+                    />
+                  ))
+                }
+                <div className={styles.time}>
+                  {dayjs(props.video.time + currentTime * 1000).format('YYYY年MM月DD日 HH:mm:ss')}
+                </div>
               </div>
-            </div>
-            <div className={styles.controlWrap}>
-              {
-                paused
-                  ? <Play24Filled
-                      className={styles.iconButton}
-                      onClick={play}
-                    />
-                  : <Pause24Filled
-                      className={styles.iconButton}
-                      onClick={pause}
-                    />
-              }
-              <div className={styles.sliderTime}>{fmtTime(currentTime)}</div>
-              <Slider
-                className={styles.slider}
-                max={duration}
-                min={0}
-                value={currentTime}
-                onChange={(_, data) => onSeek(data.value)}
-              />
-              <div className={styles.sliderTime}>{fmtTime(duration)}</div>
-            </div>
+              <div className={styles.controlWrap}>
+                {
+                  paused
+                    ? <Play24Filled
+                        className={styles.iconButton}
+                        onClick={play}
+                      />
+                    : <Pause24Filled
+                        className={styles.iconButton}
+                        onClick={pause}
+                      />
+                }
+                <div className={styles.sliderTime}>{fmtTime(currentTime)}</div>
+                <Slider
+                  className={styles.slider}
+                  max={duration}
+                  min={0}
+                  value={currentTime}
+                  onChange={(_, data) => onSeek(data.value)}
+                />
+                <div className={styles.sliderTime}>{fmtTime(duration)}</div>
+              </div>
+            </label>
+            <input
+              autoFocus
+              className={styles.playFocusInput}
+              id="player-focus-input"
+              onBlur={onPlayBlur}
+              onFocus={onPlayFocus}
+              onKeyUp={onKeyUp}
+            />
           </>
         ) : (
           <div className={styles.empty}>
