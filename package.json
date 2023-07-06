@@ -10,8 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fluentui/react-components": "^9.19.1",
-    "@fluentui/react-icons": "^2.0.200",
+    "@fluentui/react-components": "^9.25.1",
+    "@fluentui/react-icons": "^2.0.204",
     "@mario34/eslint-config-react": "^1.0.0",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.7",

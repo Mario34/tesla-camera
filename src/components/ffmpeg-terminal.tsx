@@ -14,6 +14,11 @@ import {
   Input,
   Radio,
   RadioGroup,
+  useId,
+  Toaster,
+  useToastController,
+  ToastTitle,
+  Toast,
 } from '@fluentui/react-components'
 import { ClipboardCode24Regular } from '@fluentui/react-icons'
 import { Video } from '../model'
@@ -24,27 +29,13 @@ interface FfmpegTerminalProps {
 
 type CameraType = 'f' | 'b' | 'l' | 'r'
 
-function copyText(text: string) {
-  const id = 'copy-input'
-  let inputElm = document.getElementById('copy-input') as HTMLInputElement
-  if (!inputElm) {
-    inputElm = document.createElement('input')
-    inputElm.setAttribute('id', id)
-    inputElm.setAttribute('style', 'position: fixed; top: -100vh; left: -100vw; optical: 0;')
-  } else {
-    document.body.append(inputElm)
-  }
-  inputElm.value = text
-  inputElm.select()
-  inputElm.setSelectionRange(0, 99999)
-  navigator.clipboard.writeText(inputElm.value)
-}
-
 const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
   const [ffmpegPath, setFfmpegPath] = useState(localStorage.getItem('ffmpegPath') ?? '')
   const [sourceRoot, setSourceRoot] = useState(localStorage.getItem('sourceRoot') ?? '')
   const [exportPath, setExportPath] = useState(localStorage.getItem('exportPath') ?? '')
   const [camera, setCamera] = useState<CameraType>(localStorage.getItem('camera') as CameraType ?? 'f')
+  const toasterId = useId('toaster')
+  const { dispatchToast } = useToastController(toasterId)
   const getFileName = (camera: CameraType) => {
     switch (camera) {
       case 'f':
@@ -60,6 +51,27 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
     }
   }
   const terminal = props.video ? `${ffmpegPath} -y -i ${sourceRoot}${props.video.dir}${getFileName(camera)} -vf "drawtext=fontsize=52:fontcolor=yellow:box=1:boxcolor=black@0.6:text='%{pts\\:localtime\\:${props.video?.time / 1000}}'" ${exportPath}/${getFileName(camera)}` : ''
+  function copyText(text: string) {
+    const id = 'copy-input'
+    let inputElm = document.getElementById('copy-input') as HTMLInputElement
+    if (!inputElm) {
+      inputElm = document.createElement('input')
+      inputElm.setAttribute('id', id)
+      inputElm.setAttribute('style', 'position: fixed; top: -100vh; left: -100vw; optical: 0;')
+    } else {
+      document.body.append(inputElm)
+    }
+    inputElm.value = text
+    inputElm.select()
+    inputElm.setSelectionRange(0, 99999)
+    navigator.clipboard.writeText(inputElm.value)
+    dispatchToast(
+      <Toast>
+        <ToastTitle>复制成功</ToastTitle>
+      </Toast>,
+      { intent: 'success' },
+    )
+  }
   return props.video ? (
     <Dialog modalType="non-modal">
       <DialogTrigger>
@@ -124,6 +136,7 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
             <DialogTrigger disableButtonEnhancement>
               <Button appearance="secondary">关闭</Button>
             </DialogTrigger>
+            <Toaster toasterId={toasterId} />
             <Button appearance="primary" onClick={() => copyText(terminal)}>复制</Button>
           </DialogActions>
         </DialogBody>
