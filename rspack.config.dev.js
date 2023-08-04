@@ -10,7 +10,7 @@ module.exports = defineConfig({
   },
   devServer: {
     hot: true,
-    port: '2023',
+    port: '6680',
   },
   builtins: {
     ...configBase.builtins,

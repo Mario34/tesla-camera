@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
 import FfmpegTerminal from './components/ffmpeg-terminal'
+import FsSystem from './components/fs-system'
 import cln from 'classnames'
 import { TypeEnum, type ModelState, type OriginVideo } from './model'
 import {
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   aside: {
-    width: '320px',
+    width: '330px',
     height: '100vh',
     backgroundColor: tokens.colorNeutralStroke3,
     display: 'flex',
@@ -162,22 +163,22 @@ function App() {
       src_l_file,
       src_r_file,
     ] = [
-      await origin.src_f.getFile(),
-      await origin.src_b.getFile(),
-      await origin.src_l.getFile(),
-      await origin.src_r.getFile(),
+      await origin.src_f.get(),
+      await origin.src_b.get(),
+      await origin.src_l.get(),
+      await origin.src_r.get(),
     ]
     setState({
       ...state,
       current: {
         ...origin,
-        src_f: URL.createObjectURL(src_f_file),
+        src_f: src_f_file.url,
         src_f_name: src_f_file.name,
-        src_b: URL.createObjectURL(src_b_file),
+        src_b: src_b_file.url,
         src_b_name: src_b_file.name,
-        src_l: URL.createObjectURL(src_l_file),
+        src_l: src_l_file.url,
         src_l_name: src_l_file.name,
-        src_r: URL.createObjectURL(src_r_file),
+        src_r: src_r_file.url,
         src_r_name: src_r_file.name,
       },
     })
@@ -231,7 +232,9 @@ function App() {
         </div>
         <div className={styles.content}>
           <div className={styles.header}>
-            <DirectoryAccess onAccess={onFileSystemAccess} />
+            {window.__TAURI_IPC__
+              ? <FsSystem onAccess={onFileSystemAccess} />
+              : <DirectoryAccess onAccess={onFileSystemAccess} />}
             <Tooltip
               content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>}
               relationship="label"
@@ -265,7 +268,9 @@ function App() {
                 size="large"
               />
             </Tooltip>
-            <FfmpegTerminal video={state.current} />
+            {window.__TAURI_IPC__
+              ? null
+              : <FfmpegTerminal video={state.current} />}
           </div>
           <div className={styles.player}>
             <Player key={state.current?.time} video={state.current} />

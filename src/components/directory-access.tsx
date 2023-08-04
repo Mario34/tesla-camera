@@ -7,7 +7,7 @@ import {
 import { FolderAdd24Regular } from '@fluentui/react-icons'
 import dayjs from 'dayjs'
 import {
-  type OriginVideo, TypeEnum, type VideoFile, type EventJson,
+  type OriginVideo, TypeEnum, type VideoFile, type EventJson, type FileData,
 } from '../model'
 
 interface DirectoryAccessProps {
@@ -73,23 +73,31 @@ function convertFiles(videoFiles: VideoFile[]): OriginVideo[] {
       }
       videos[name] = exists
     }
+    const fsData: FileData = {
+      async get() {
+        return {
+          url: URL.createObjectURL(await fs.getFile()),
+          name,
+        }
+      },
+    }
     if (fs.name.includes('front')) {
-      exists.src_f = fs
+      exists.src_f = fsData
     }
     if (fs.name.includes('back')) {
-      exists.src_b = fs
+      exists.src_b = fsData
     }
     if (fs.name.includes('right_repeater')) {
-      exists.src_r = fs
+      exists.src_r = fsData
     }
     if (fs.name.includes('left_repeater')) {
-      exists.src_l = fs
+      exists.src_l = fsData
     }
   })
   return Object.values(videos) as OriginVideo[]
 }
 
-const DirectoryAccess: React.FC<React.PropsWithChildren<DirectoryAccessProps>> = (props) => {
+const DirectoryAccess: React.FC<React.PropsWithChildren<DirectoryAccessProps>> = props => {
   async function onSelectFile() {
     const dirHandle = await window.showDirectoryPicker()
     const files = await getDirFiles(dirHandle)

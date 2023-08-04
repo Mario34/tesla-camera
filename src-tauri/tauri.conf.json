@@ -4,7 +4,8 @@
     "beforeBuildCommand": "pnpm run build",
     "beforeDevCommand": "pnpm run dev",
     "devPath": "http://localhost:6680",
-    "distDir": "../dist"
+    "distDir": "../dist",
+    "withGlobalTauri": true
   },
   "package": {
     "productName": "teslacam-player",
@@ -12,7 +13,23 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
+      },
+      "dialog": {
+        "all": true,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
+      },
+      "fs": {
+        "all":true,
+        "scope": ["**"]
+      }
     },
     "bundle": {
       "active": true,
@@ -21,7 +38,6 @@
       "deb": {
         "depends": []
       },
-      "externalBin": [],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -29,7 +45,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "mario34.top",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -48,7 +64,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self'; asset: https://asset.localhost"
     },
     "updater": {
       "active": false
@@ -56,10 +72,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "minWidth": 1440,
+        "minHeight": 900,
         "resizable": true,
-        "title": "TeslaCam",
-        "width": 800
+        "title": "TeslaCam"
       }
     ]
   }
