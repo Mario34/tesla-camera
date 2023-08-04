@@ -8,7 +8,7 @@ const config = {
     },
   },
   output: {
-    publicPath: '/',
+    publicPath: './',
     filename: '[name].[contenthash].js',
   },
   builtins: {
