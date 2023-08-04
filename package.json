@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "rspack serve -c ./rspack.config.js",
-    "build": "rspack build -c ./rspack.config.js",
+    "dev": "rspack serve -c ./rspack.config.dev.js",
+    "build": "rspack build -c ./rspack.config.pro.js",
+    "preview": "rspack preview --port 3091",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {

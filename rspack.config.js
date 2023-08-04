@@ -1,5 +1,7 @@
-module.exports = {
-  mode: 'development',
+// @ts-check
+
+/** @type {import('@rspack/cli').Configuration} */
+const config = {
   entry: {
     main: {
       import: ['./src/main.tsx'],
@@ -7,20 +9,7 @@ module.exports = {
   },
   output: {
     publicPath: '/',
-  },
-  devServer: {
-    hot: true,
-    allowedHosts: ['.preview.csb.app'],
-    port: '9090',
-  },
-  module: {
-    parser: {
-      asset: {
-        dataUrlCondition: {
-          maxSize: 1,
-        },
-      },
-    },
+    filename: '[name].[contenthash].js',
   },
   builtins: {
     html: [
@@ -28,10 +17,14 @@ module.exports = {
         template: './index.html',
       },
     ],
-    progress: {},
-    react: {
-      development: true,
-      refresh: true,
+    copy: {
+      patterns: [
+        {
+          from: 'public',
+        },
+      ],
     },
   },
 }
+
+module.exports = config
