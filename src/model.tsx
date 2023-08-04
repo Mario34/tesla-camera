@@ -12,16 +12,32 @@ export enum CameraEnum {
   '右'
 }
 
+export interface FileData {
+  get(): Promise<{ url: string; name: string }>
+  name?: string
+  revoke?(): void
+}
+
 export interface OriginVideo {
   title: string
   time: number
   type: TypeEnum
   dir: string
-  src_f: FileSystemFileHandle
-  src_b: FileSystemFileHandle
-  src_r: FileSystemFileHandle
-  src_l: FileSystemFileHandle
+  src_f: FileData
+  src_b: FileData
+  src_r: FileData
+  src_l: FileData
   event?: number
+}
+
+export interface OriginFSVideo {
+  title: string
+  time: number
+  type: TypeEnum
+  src_f: string
+  src_b: string
+  src_r: string
+  src_l: string
 }
 
 export interface Video {
@@ -59,4 +75,10 @@ export interface EventJson {
   est_lon: string
   reason: string
   camera: string
+}
+
+export interface TauriFile {
+  name: string
+  path: string
+  children?: TauriFile[]
 }

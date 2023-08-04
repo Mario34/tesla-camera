@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     height: '120px',
     width: '160px',
     cursor: 'pointer',
-    backgroundColor: tokens.colorSubtleBackgroundInvertedSelected,
+    backgroundColor: tokens.colorSubtleBackgroundInvertedHover,
     ...shorthands.borderRadius('6px'),
     ...shorthands.overflow('hidden'),
     '&.c0': {

@@ -17,12 +17,14 @@ const useStyles = makeStyles({
     ...shorthands.padding(0, '20px'),
   },
   videoWrap: {
+    display: 'block',
     position: 'relative',
+    width: '1000px',
   },
   video: {
     width: '1000px',
     height: '750px',
-    backgroundColor: tokens.colorNeutralForegroundDisabled,
+    backgroundColor: tokens.colorNeutralBackground5Selected,
   },
   time: {
     position: 'absolute',
@@ -45,7 +47,7 @@ const useStyles = makeStyles({
     ...shorthands.gap('10px'),
   },
   slider: {
-    width: '100%',
+    flexGrow: 1,
   },
   sliderTime: {
     minWidth: '40px',
@@ -181,22 +183,21 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
     <div className={styles.root}>
       {
         props.video ? (
-          <>
-            <label htmlFor="player-focus-input">
-              <div className={styles.videoWrap}>
-                <video
-                  muted
-                  className={styles.video}
-                  id="player"
-                  ref={videoRef}
-                  onLoadedMetadata={onLoadedMetadata}
-                  onPause={() => setPaused(true)}
-                  onPlay={() => setPaused(false)}
-                  onTimeUpdate={onTimeupdate}
-                >
-                  <source src={getSrc(currentCamera, props.video)} type="video/mp4" />
-                </video>
-                {
+          <div className={styles.root}>
+            <label className={styles.videoWrap} htmlFor="player-focus-input">
+              <video
+                muted
+                className={styles.video}
+                id="player"
+                ref={videoRef}
+                onLoadedMetadata={onLoadedMetadata}
+                onPause={() => setPaused(true)}
+                onPlay={() => setPaused(false)}
+                onTimeUpdate={onTimeupdate}
+              >
+                <source src={getSrc(currentCamera, props.video)} type="video/mp4" />
+              </video>
+              {
                   [CameraEnum.前, CameraEnum.后, CameraEnum.左, CameraEnum.右].map(camera => (
                     <MiniPlay
                       camera={camera}
@@ -209,12 +210,12 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
                     />
                   ))
                 }
-                <div className={styles.time}>
-                  {dayjs(props.video.time + currentTime * 1000).format('YYYY年MM月DD日 HH:mm:ss')}
-                </div>
+              <div className={styles.time}>
+                {dayjs(props.video.time + currentTime * 1000).format('YYYY年MM月DD日 HH:mm:ss')}
               </div>
-              <div className={styles.controlWrap}>
-                {
+            </label>
+            <div className={styles.controlWrap}>
+              {
                   paused
                     ? <Play24Filled
                         className={styles.iconButton}
@@ -225,17 +226,16 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
                         onClick={pause}
                       />
                 }
-                <div className={styles.sliderTime}>{fmtTime(currentTime)}</div>
-                <Slider
-                  className={styles.slider}
-                  max={duration}
-                  min={0}
-                  value={currentTime}
-                  onChange={(_, data) => onSeek(data.value)}
-                />
-                <div className={styles.sliderTime}>{fmtTime(duration)}</div>
-              </div>
-            </label>
+              <div className={styles.sliderTime}>{fmtTime(currentTime)}</div>
+              <Slider
+                className={styles.slider}
+                max={duration}
+                min={0}
+                value={currentTime}
+                onChange={(_, data) => onSeek(data.value)}
+              />
+              <div className={styles.sliderTime}>{fmtTime(duration)}</div>
+            </div>
             <input
               autoFocus
               className={styles.playFocusInput}
@@ -244,7 +244,7 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
               onFocus={onPlayFocus}
               onKeyUp={onKeyUp}
             />
-          </>
+          </div>
         ) : (
           <div className={styles.empty}>
             暂无数据
