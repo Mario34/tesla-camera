@@ -1,8 +1,8 @@
 // @ts-check
+const { defineConfig } = require('@rspack/cli')
 const configBase = require('./rspack.config')
 
-/** @type {import('@rspack/cli').Configuration} */
-const config = {
+module.exports = defineConfig({
   ...configBase,
   mode: 'production',
   devtool: false,
@@ -16,6 +16,4 @@ const config = {
       },
     ],
   },
-}
-
-module.exports = config
+})
