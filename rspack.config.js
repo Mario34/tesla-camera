@@ -1,7 +1,7 @@
 // @ts-check
+const { defineConfig } = require('@rspack/cli')
 
-/** @type {import('@rspack/cli').Configuration} */
-const config = {
+module.exports = defineConfig({
   entry: {
     main: {
       import: ['./src/main.tsx'],
@@ -25,6 +25,4 @@ const config = {
       ],
     },
   },
-}
-
-module.exports = config
+})

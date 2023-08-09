@@ -1,15 +1,22 @@
 // @ts-check
+const { defineConfig } = require('@rspack/cli')
 const configBase = require('./rspack.config')
 
-/** @type {import('@rspack/cli').Configuration} */
-const config = {
+module.exports = defineConfig({
   ...configBase,
   mode: 'development',
+  output: {
+    publicPath: '/',
+  },
   devServer: {
     hot: true,
-    allowedHosts: ['.preview.csb.app'],
     port: '2023',
   },
-}
-
-module.exports = config
+  builtins: {
+    ...configBase.builtins,
+    react: {
+      development: true,
+      refresh: true,
+    },
+  },
+})
