@@ -84,9 +84,18 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorSubtleBackgroundHover,
   },
   header: {
-    ...shorthands.padding('20px'),
     display: 'flex',
+    justifyContent: 'space-between',
+    ...shorthands.padding('20px'),
+  },
+  headerLeft: {
     ...shorthands.gap('10px'),
+    display: 'flex',
+  },
+  headerRight: {
+    ...shorthands.gap('10px'),
+    display: 'flex',
+    alignItems: 'center',
   },
   link: {
     color: 'inherit',
@@ -172,7 +181,6 @@ function App() {
     ]
     setState({
       ...state,
-      // FIXME: 区分浏览器环境与Tauri环境类型
       current: {
         ...origin,
         src_f: src_f_file.url,
@@ -239,45 +247,47 @@ function App() {
         </div>
         <div className={styles.content}>
           <div className={styles.header}>
-            {window.__TAURI_IPC__
-              ? <FsSystem onAccess={onFileSystemAccess} />
-              : <DirectoryAccess onAccess={onFileSystemAccess} />}
-            <Tooltip
-              content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>}
-              relationship="label"
-            >
-              <Button
-                icon={
-                  <a
-                    className={styles.link}
-                    href="https://github.com/Mario34/tesla-camera"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <Code24Filled />
-                  </a>
-                }
-                size="large"
-              />
-            </Tooltip>
-            <Tooltip content={<>问题反馈</>} relationship="label">
-              <Button
-                icon={
-                  <a
-                    className={styles.link}
-                    href="https://github.com/Mario34/tesla-camera/issues/new?assignees=Mario34&labels=&template=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88.md&title=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <BookQuestionMark24Regular />
-                  </a>
-                }
-                size="large"
-              />
-            </Tooltip>
-            {window.__TAURI_IPC__
-              ? <FfmpegExport video={state.current} />
-              : <FfmpegTerminal video={state.current} />}
+            <div className={styles.headerLeft}>
+              {window.__TAURI_IPC__
+                ? <FsSystem onAccess={onFileSystemAccess} />
+                : <DirectoryAccess onAccess={onFileSystemAccess} />}
+              {window.__TAURI_IPC__ && state.current
+                ? <FfmpegExport video={state.current} />
+                : <FfmpegTerminal video={state.current} />}
+            </div>
+            <div className={styles.headerRight}>
+              <Tooltip
+                content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>}
+                relationship="label"
+              >
+                <Button
+                  icon={
+                    <a
+                      className={styles.link}
+                      href="https://github.com/Mario34/tesla-camera"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <Code24Filled />
+                    </a>
+                  }
+                />
+              </Tooltip>
+              <Tooltip content={<>问题反馈</>} relationship="label">
+                <Button
+                  icon={
+                    <a
+                      className={styles.link}
+                      href="https://github.com/Mario34/tesla-camera/issues/new?assignees=Mario34&labels=&template=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88.md&title=%E6%84%8F%E8%A7%81%E6%88%96%E5%8F%8D%E9%A6%88"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <BookQuestionMark24Regular />
+                    </a>
+                  }
+                />
+              </Tooltip>
+            </div>
           </div>
           <div className={styles.player}>
             <Player key={state.current?.time} video={state.current} />

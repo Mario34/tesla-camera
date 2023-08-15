@@ -19,12 +19,19 @@ const useStyles = makeStyles({
   videoWrap: {
     display: 'block',
     position: 'relative',
-    width: '1000px',
   },
   video: {
-    width: '1000px',
-    height: '750px',
+    width: '800px',
+    height: '600px',
     backgroundColor: tokens.colorNeutralBackground5Selected,
+    '@media screen and (min-width: 1440px)': {
+      width: '1000px',
+      height: '750px',
+    },
+    '@media screen and (min-width: 1680px)': {
+      width: '1200px',
+      height: '900px',
+    },
   },
   time: {
     position: 'absolute',
