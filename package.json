@@ -1,7 +1,7 @@
 {
   "name": "tesla-camera",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "rspack serve -c ./rspack.config.dev.js",
     "build": "rspack build -c ./rspack.config.pro.js",
