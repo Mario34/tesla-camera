@@ -1,5 +1,5 @@
 {
-  "name": "teslacam-player",
+  "name": "tesla-camera",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -8,7 +8,7 @@
     "build:tauri": "rspack build -c ./rspack.config.tauri.js",
     "preview": "rspack preview --port 3091",
     "app:dev": "pnpm tauri dev",
-    "app:build": "tauri build --target x86_64-apple-darwin",
+    "app:build": "tauri build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
