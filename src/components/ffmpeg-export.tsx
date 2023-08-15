@@ -22,13 +22,13 @@ import {
   tokens,
 } from '@fluentui/react-components'
 import { ResizeVideo24Filled } from '@fluentui/react-icons'
-import { type TauriVideo, type ExportTaskType, ExportStatusEnum } from '../model'
+import { type Video, type ExportTaskType, ExportStatusEnum } from '../model'
 import { open } from '@tauri-apps/api/dialog'
 import { Command } from '@tauri-apps/api/shell'
 import ExportTask from './export-task'
 
 interface FfmpegExportProps {
-  video: TauriVideo
+  video: Video
 }
 
 type CameraType = 'f' | 'b' | 'l' | 'r'
@@ -40,7 +40,7 @@ const useStyles = makeStyles({
   },
 })
 
-const getFile = (camera: CameraType, video: TauriVideo) => {
+const getFile = (camera: CameraType, video: Video) => {
   switch (camera) {
     case 'f':
       return {
@@ -72,7 +72,7 @@ const getFile = (camera: CameraType, video: TauriVideo) => {
 
 const doTask = async (
   camera: CameraType,
-  video: TauriVideo,
+  video: Video,
   exportDir: string,
   log: (arg: {
     path: string

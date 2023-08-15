@@ -80,6 +80,8 @@ function convertFiles(videoFiles: VideoFile[]): OriginVideo[] {
           name,
         }
       },
+      name,
+      path,
     }
     if (fs.name.includes('front')) {
       exists.src_f = fsData

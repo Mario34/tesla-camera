@@ -28,8 +28,8 @@ export interface ExportTaskType {
 
 export interface FileData {
   get(): Promise<{ url: string; name: string }>
-  name?: string
-  path?: string
+  name: string
+  path: string
 }
 
 export interface OriginVideo {
@@ -67,9 +67,6 @@ export interface Video {
   src_r_name: string
   src_l: string
   src_l_name: string
-}
-
-export interface TauriVideo extends Video {
   src_f_path: string
   src_b_path: string
   src_r_path: string
