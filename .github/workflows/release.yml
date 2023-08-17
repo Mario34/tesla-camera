@@ -1,0 +1,79 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-apple-darwin
+            platform: macos-latest
+          - target: x86_64-apple-darwin
+            platform: macos-latest
+          - target: x86_64-pc-windows-msvc
+            platform: windows-latest
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: install dependencies (mac only)
+        if: matrix.platform == 'macos-latest'
+        run: |
+            rustup target add aarch64-apple-darwin
+
+      - name: Sync node version and setup cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+
+      - name: Pnpm steup
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+    
+      - name: Install frontend dependencies
+        run: pnpm install
+
+      - uses: robinraju/release-downloader@v1.8
+        with:
+          repository: Mario34/tesla-camera
+          tag: v1.0.0-pre
+          fileName: ffmpeg.zip
+          extract: true
+          out-file-path: release-downloader
+
+      - name: Init binaries
+        run:
+          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg" src-tauri/binaries/ffmpeg-aarch64-apple-darwin &
+          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg" src-tauri/binaries/ffmpeg-x86_64-apple-darwin &
+          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg.exe" src-tauri/binaries/ffmpeg-x86_64-pc-windows-msvc.exe
+        shell: bash
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'TeslaCamera v__VERSION__'
+          releaseBody: 'See the assets to download and install this version.'
+          releaseDraft: true
+          prerelease: false

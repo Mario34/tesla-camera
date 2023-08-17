@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "pnpm run build",
+    "beforeBuildCommand": "pnpm run build:tauri",
     "beforeDevCommand": "pnpm run dev",
     "devPath": "http://localhost:6680",
     "distDir": "../dist",
@@ -29,6 +29,19 @@
       "fs": {
         "all":true,
         "scope": ["**"]
+      },
+      "shell": {
+        "all": true,
+        "execute": false,
+        "open": true,
+        "scope": [
+          { 
+            "name": "binaries/ffmpeg",
+            "sidecar": true,
+            "args": true
+          }
+        ],
+        "sidecar": true
       }
     },
     "bundle": {
@@ -38,6 +51,9 @@
       "deb": {
         "depends": []
       },
+      "externalBin": [
+        "binaries/ffmpeg"
+      ],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -64,7 +80,7 @@
       }
     },
     "security": {
-      "csp": "default-src 'self'; img-src 'self'; asset: https://asset.localhost"
+      "csp": "null"
     },
     "updater": {
       "active": false

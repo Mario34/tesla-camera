@@ -12,10 +12,24 @@ export enum CameraEnum {
   '右'
 }
 
+export enum ExportStatusEnum {
+  进行中,
+  导出成功,
+  导出失败
+}
+
+export interface ExportTaskType {
+  path: string
+  name: string
+  exportDir: string
+  status: number
+  log: string[]
+}
+
 export interface FileData {
   get(): Promise<{ url: string; name: string }>
   name?: string
-  revoke?(): void
+  path?: string
 }
 
 export interface OriginVideo {
@@ -53,6 +67,13 @@ export interface Video {
   src_r_name: string
   src_l: string
   src_l_name: string
+}
+
+export interface TauriVideo extends Video {
+  src_f_path: string
+  src_b_path: string
+  src_r_path: string
+  src_l_path: string
 }
 
 export interface ModelState {
