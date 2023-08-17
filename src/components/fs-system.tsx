@@ -5,14 +5,14 @@ import {
   Button,
 } from '@fluentui/react-components'
 import { FolderAdd24Regular } from '@fluentui/react-icons'
-import { readDir } from '@tauri-apps/api/fs'
 import dayjs from 'dayjs'
 import {
   type OriginVideo, TypeEnum, type TauriFile, type EventJson,
+  type FileData,
 } from '../model'
 import { convertFileSrc } from '@tauri-apps/api/tauri'
 import { open } from '@tauri-apps/api/dialog'
-import { readTextFile } from '@tauri-apps/api/fs'
+import { readTextFile, readDir } from '@tauri-apps/api/fs'
 
 interface FsSystemProps {
   onAccess: (accessFile: OriginVideo[]) => void
@@ -70,17 +70,19 @@ function convertVideoFiles(videoFiles: TauriFile[]): OriginVideo[] {
         title: nameToTitle(timeName),
         time: nameToTime(timeName),
         type: pathToType(path),
-        dir: path,
+        dir: path.replace(name, ''),
       }
       videos[timeName] = exists
     }
-    const fs = {
+    const fs: FileData = {
       async get() {
         return Promise.resolve({
           url: convertFileSrc(path),
           name,
         })
       },
+      name,
+      path,
     }
     if (name.includes('front')) {
       exists.src_f = fs

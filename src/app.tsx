@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
 import FfmpegTerminal from './components/ffmpeg-terminal'
+import FfmpegExport from './components/ffmpeg-export'
 import FsSystem from './components/fs-system'
 import cln from 'classnames'
 import { TypeEnum, type ModelState, type OriginVideo } from './model'
@@ -140,6 +141,7 @@ function App() {
     }
   }, [])
   function onFileSystemAccess(videos: OriginVideo[]) {
+    console.log(videos)
     setState({
       ...state,
       list: videos,
@@ -170,16 +172,21 @@ function App() {
     ]
     setState({
       ...state,
+      // FIXME: 区分浏览器环境与Tauri环境类型
       current: {
         ...origin,
         src_f: src_f_file.url,
         src_f_name: src_f_file.name,
+        src_f_path: origin.src_f.path,
         src_b: src_b_file.url,
         src_b_name: src_b_file.name,
+        src_b_path: origin.src_b.path,
         src_l: src_l_file.url,
         src_l_name: src_l_file.name,
+        src_l_path: origin.src_l.path,
         src_r: src_r_file.url,
         src_r_name: src_r_file.name,
+        src_r_path: origin.src_r.path,
       },
     })
   }
@@ -269,7 +276,7 @@ function App() {
               />
             </Tooltip>
             {window.__TAURI_IPC__
-              ? null
+              ? <FfmpegExport video={state.current} />
               : <FfmpegTerminal video={state.current} />}
           </div>
           <div className={styles.player}>
