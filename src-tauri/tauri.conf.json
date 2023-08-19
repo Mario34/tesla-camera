@@ -19,16 +19,18 @@
         "assetScope": ["**"]
       },
       "dialog": {
-        "all": true,
-        "ask": true,
-        "confirm": true,
-        "message": true,
-        "open": true,
-        "save": true
+        "open": true
+      },
+      "notification": {
+        "all": true
       },
       "fs": {
-        "all":true,
+        "readFile": true,
+        "readDir": true,
         "scope": ["**"]
+      },
+      "path": {
+        "all": true
       },
       "shell": {
         "all": true,
@@ -70,7 +72,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": ["icons/*"],
       "shortDescription": "",
       "targets": "all",
       "windows": {

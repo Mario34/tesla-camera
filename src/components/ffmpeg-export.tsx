@@ -25,7 +25,11 @@ import { ResizeVideo24Filled } from '@fluentui/react-icons'
 import { type Video, type ExportTaskType, ExportStatusEnum } from '../model'
 import { open } from '@tauri-apps/api/dialog'
 import { Command } from '@tauri-apps/api/shell'
+import { getName } from '@tauri-apps/api/app'
+import { resolveResource } from '@tauri-apps/api/path'
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification'
 import ExportTask from './export-task'
+import { durationToMs } from '../tool'
 
 interface FfmpegExportProps {
   video: Video
@@ -88,6 +92,7 @@ const doTask = async (
     [
       '-y',
       '-i', filePath,
+      '-progress', '-', '-nostats',
       '-vf', `drawtext=fontsize=52:fontcolor=white:box=1:boxborderw=10:x=10:y=10:boxcolor=black@0.4:text='%{pts\\:localtime\\:${video.time / 1000}}'`,
       `${exportDir}/${fileName}`,
     ],
@@ -191,22 +196,41 @@ const FfmpegExport: React.FC<FfmpegExportProps> = (props) => {
       return
     }
     setDialogIsOpen(false)
+    const afterNoticePermission = await isPermissionGranted()
+    if (!afterNoticePermission) {
+      requestPermission()
+    }
     doTask(
       camera,
       props.video,
       exportDir,
-      ({
+      async ({
         path, status, log, exportDir, name,
       }) => {
         const temp = [...tempTasks.current]
         const existsIndex = temp.findIndex(item => item.path === path)
+        const lineLog = log.trim()
+        let duration
+        let progress
+        if (lineLog.startsWith('Duration')) {
+          const durationStr = lineLog.match(/[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?,/)?.[0]?.slice(0, -1)
+          if (durationStr) {
+            duration = durationToMs(durationStr)
+          }
+        }
+        if (lineLog.startsWith('out_time_ms')) {
+          const progressStr = lineLog.slice(lineLog.indexOf('=') + 1)
+          if (progressStr) {
+            progress = Math.max(0, +progressStr / 1000)
+          }
+        }
         if (existsIndex > -1) {
           temp.splice(existsIndex, 1, {
-            name,
-            path: filePath,
-            exportDir,
+            ...temp[existsIndex],
             status,
-            log: [log],
+            duration: duration ?? temp[existsIndex].duration,
+            progress: progress ?? temp[existsIndex].progress,
+            log: [...temp[existsIndex].log, log],
           })
         } else {
           temp.push({
@@ -214,6 +238,8 @@ const FfmpegExport: React.FC<FfmpegExportProps> = (props) => {
             path: filePath,
             exportDir,
             status,
+            duration: duration ?? 1,
+            progress: 0,
             log: [log],
           })
         }
@@ -229,6 +255,15 @@ const FfmpegExport: React.FC<FfmpegExportProps> = (props) => {
             </Toast>,
             { intent: 'success' },
           )
+          if (await isPermissionGranted()) {
+            const appName = await getName()
+            const iconPath = await resolveResource('icons/128x128.png')
+            sendNotification({
+              title: `${appName}导出通知`,
+              body: `文件导出成功: ${exportDir}`,
+              icon: iconPath,
+            })
+          }
         }
         if (status === ExportStatusEnum.导出失败) {
           dispatchToast(
@@ -242,6 +277,15 @@ const FfmpegExport: React.FC<FfmpegExportProps> = (props) => {
             </Toast>,
             { intent: 'error' },
           )
+          if (await isPermissionGranted()) {
+            const appName = await getName()
+            const iconPath = await resolveResource('icons/128x128.png')
+            sendNotification({
+              title: `${appName}导出通知`,
+              body: `文件导出失败: ${exportDir}`,
+              icon: iconPath,
+            })
+          }
         }
         tempTasks.current = temp
         setTasks(temp)

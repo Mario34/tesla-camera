@@ -23,6 +23,8 @@ export interface ExportTaskType {
   name: string
   exportDir: string
   status: number
+  duration: number
+  progress: number
   log: string[]
 }
 

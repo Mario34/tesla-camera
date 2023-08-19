@@ -150,7 +150,6 @@ function App() {
     }
   }, [])
   function onFileSystemAccess(videos: OriginVideo[]) {
-    console.log(videos)
     setState({
       ...state,
       list: videos,
