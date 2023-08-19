@@ -8,13 +8,14 @@ import {
   DialogBody,
   DialogContent,
   Badge,
+  ProgressBar,
+  DialogActions,
+  Field,
   makeStyles,
   tokens,
 } from '@fluentui/react-components'
-import { TaskListSquareLtr24Regular } from '@fluentui/react-icons'
-import { Tag } from '@fluentui/react-tags-preview'
+import { TaskListSquareLtr24Regular, VideoClipMultiple24Regular } from '@fluentui/react-icons'
 import { type ExportTaskType, ExportStatusEnum } from '../model'
-import cln from 'classnames'
 
 interface ExportTaskProps {
   tasks?: ExportTaskType[]
@@ -38,6 +39,15 @@ const useStyles = makeStyles({
     fontSize: '12px',
     whiteSpace: 'break-spaces',
     wordBreak: 'break-all',
+    display: 'flex',
+    lineHeight: '24px',
+    columnGap: '4px',
+    alignItems: 'center',
+  },
+  taskIcon: {
+    height: '24px',
+    width: '24px',
+    flexShrink: '0',
   },
   taskLog: {
     fontSize: '12px',
@@ -95,21 +105,35 @@ const ExportTask: React.FC<ExportTaskProps> = (props) => {
                     key={item.path}
                   >
                     <div className={styles.taskItem}>
-                      <Tag
-                        className={cln({
-                          [styles.progressTag]: item.status === ExportStatusEnum.进行中,
-                          [styles.completedTag]: item.status === ExportStatusEnum.导出成功,
-                          [styles.failTag]: item.status === ExportStatusEnum.导出失败,
-                        })}
-                        size="small"
-                      >{ExportStatusEnum[item.status]}
-                      </Tag>
+                      <VideoClipMultiple24Regular className={styles.taskIcon} />
                       {item.exportDir}/{item.name}
+                    </div>
+                    <div>
+                      <Field
+                        validationMessage={
+                          item.status === ExportStatusEnum.进行中
+                            ? `正在导出，请等待 ${Math.floor((100 * item.progress) / item.duration)}%`
+                            : ExportStatusEnum[item.status] ?? ''
+                        }
+                        validationState="none"
+                      >
+                        <ProgressBar
+                          color={item.status === ExportStatusEnum.导出成功 ? 'success' : 'brand'}
+                          max={100}
+                          shape="rounded"
+                          value={item.status === ExportStatusEnum.导出成功 ? 100 : (100 * item.progress) / item.duration}
+                        />
+                      </Field>
                     </div>
                   </div>
                 ))
               }
             </DialogContent>
+            <DialogActions>
+              <DialogTrigger disableButtonEnhancement>
+                <Button appearance="secondary">关闭</Button>
+              </DialogTrigger>
+            </DialogActions>
           </DialogBody>
         </DialogSurface>
       </Dialog>
