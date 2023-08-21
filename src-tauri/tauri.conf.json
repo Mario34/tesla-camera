@@ -9,7 +9,7 @@
   },
   "package": {
     "productName": "TeslaCamera",
-    "version": "1.0.0"
+    "version": "../package.json"
   },
   "tauri": {
     "allowlist": {
@@ -19,7 +19,8 @@
         "assetScope": ["**"]
       },
       "dialog": {
-        "open": true
+        "open": true,
+        "message": true
       },
       "notification": {
         "all": true
@@ -85,7 +86,16 @@
       "csp": "null"
     },
     "updater": {
-      "active": false
+      "active": true,
+      "dialog": true,
+      "endpoints": [
+        "https://raw.githubusercontent.com/Mario34/gist/main/tesla-camera-update.json",
+        "https://gitee.com/mario34/tesla-camera/releases/download/v1.0.0-pre/tesla-camera-update.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEZFODgwNkZFNEU4OTkxQTcKUldTbmtZbE8vZ2FJL2dQNjExUng4bzJiQS9ZVFRBYytjWTBJTE94ZE5kMUhUWEFaWjFKci9Ya28K",
+      "windows": {
+        "installMode": "passive"
+      }
     },
     "windows": [
       {

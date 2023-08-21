@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react'
-import Player from './components/player'
-import DirectoryAccess from './components/directory-access'
-import FfmpegTerminal from './components/ffmpeg-terminal'
-import FfmpegExport from './components/ffmpeg-export'
-import FsSystem from './components/fs-system'
 import cln from 'classnames'
-import { TypeEnum, type ModelState, type OriginVideo } from './model'
 import {
   makeStyles,
   shorthands,
@@ -21,6 +15,13 @@ import {
 import {
   Record24Regular, Code24Filled, BookQuestionMark24Regular,
 } from '@fluentui/react-icons'
+import Player from './components/player'
+import DirectoryAccess from './components/directory-access'
+import FfmpegTerminal from './components/ffmpeg-terminal'
+import FfmpegExport from './components/ffmpeg-export'
+import FsSystem from './components/fs-system'
+import CheckUpdate from './components/check-update'
+import { TypeEnum, type ModelState, type OriginVideo } from './model'
 
 const useStyles = makeStyles({
   root: {
@@ -255,6 +256,7 @@ function App() {
                 : <FfmpegTerminal video={state.current} />}
             </div>
             <div className={styles.headerRight}>
+              <CheckUpdate />
               <Tooltip
                 content={<>查看源代码 (本项目<Caption1Stronger>不会上传</Caption1Stronger>您的隐私视频，并且接受公开的代码审查)</>}
                 relationship="label"
