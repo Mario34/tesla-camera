@@ -12,14 +12,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - target: aarch64-apple-darwin
-            platform: macos-latest
-          - target: x86_64-apple-darwin
-            platform: macos-latest
-          - target: x86_64-pc-windows-msvc
-            platform: windows-latest
-    runs-on: ${{ matrix.platform }}
+        settings:
+          - platform: macos-latest
+            name: MacOS Intel
+            target: x86_64-apple-darwin
+            bundles: app,dmg,updater
+          - platform: macos-latest
+            name: MacOS M1
+            bundles: app,dmg,updater
+            target: aarch64-apple-darwin
+          - platform: windows-latest
+            name: Widows
+            bundles: msi,updater
+            target: x86_64-pc-windows-msvc
+    name: Release (${{ matrix.settings.name }})
+    runs-on: ${{ matrix.settings.platform }}
 
     steps:
       - name: Checkout repository
@@ -27,16 +34,14 @@ jobs:
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.settings.target }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
-
-      - name: install dependencies (mac only)
-        if: matrix.platform == 'macos-latest'
-        run: |
-            rustup target add aarch64-apple-darwin
 
       - name: Sync node version and setup cache
         uses: actions/setup-node@v3
@@ -71,7 +76,10 @@ jobs:
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
+          args: --target ${{ matrix.settings.target }} --bundles ${{ matrix.settings.bundles }}
           tagName: ${{ github.ref_name }}
           releaseName: 'TeslaCamera v__VERSION__'
           releaseBody: 'See the assets to download and install this version.'
