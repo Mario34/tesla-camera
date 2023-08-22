@@ -13,7 +13,7 @@ import {
   Badge,
 } from '@fluentui/react-components'
 import {
-  Record24Regular, Code24Filled, BookQuestionMark24Regular,
+  Record24Regular, Code24Regular, BookQuestionMark24Regular,
 } from '@fluentui/react-icons'
 import Player from './components/player'
 import DirectoryAccess from './components/directory-access'
@@ -269,7 +269,7 @@ function App() {
                       rel="noreferrer"
                       target="_blank"
                     >
-                      <Code24Filled />
+                      <Code24Regular />
                     </a>
                   }
                 />
