@@ -1,3 +1,22 @@
+# [1.1.0](https://github.com/Mario34/tesla-camera/compare/v1.0.0...v1.1.0) (2023-08-22)
+
+
+### Bug Fixes
+
+* 图标风格统一 ([bf1c90a](https://github.com/Mario34/tesla-camera/commit/bf1c90aaf43d18c751abc5e6154d06e7fadea042))
+
+
+### Features
+
+* 添加检查更新功能 ([62f9b47](https://github.com/Mario34/tesla-camera/commit/62f9b472fb0513893f9b9de0dec4cef582b03a96))
+
+
+### Performance Improvements
+
+* 导出任务添加进度 ([b3d1e8b](https://github.com/Mario34/tesla-camera/commit/b3d1e8b80ab7622aeee345b09ce87787f0d5a772)), closes [closed#22](https://github.com/closed/issues/22)
+
+
+
 # [1.0.0](https://github.com/Mario34/tesla-camera/compare/v1.0.0-pre...v1.0.0) (2023-08-17)
 
 
