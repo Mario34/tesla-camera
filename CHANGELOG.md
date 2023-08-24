@@ -4,17 +4,6 @@
 ### Bug Fixes
 
 * 修复打包ffmpeg文件丢失execute权限 ([9a42e0b](https://github.com/Mario34/tesla-camera/commit/9a42e0beac796e2a1dcfe844b771f9fc466b7657))
-* 图标风格统一 ([bf1c90a](https://github.com/Mario34/tesla-camera/commit/bf1c90aaf43d18c751abc5e6154d06e7fadea042))
-
-
-### Features
-
-* 添加检查更新功能 ([62f9b47](https://github.com/Mario34/tesla-camera/commit/62f9b472fb0513893f9b9de0dec4cef582b03a96))
-
-
-### Performance Improvements
-
-* 导出任务添加进度 ([b3d1e8b](https://github.com/Mario34/tesla-camera/commit/b3d1e8b80ab7622aeee345b09ce87787f0d5a772)), closes [closed#22](https://github.com/closed/issues/22)
 
 
 
@@ -33,7 +22,7 @@
 
 ### Performance Improvements
 
-* 导出任务添加进度 ([b3d1e8b](https://github.com/Mario34/tesla-camera/commit/b3d1e8b80ab7622aeee345b09ce87787f0d5a772)), closes [closed#22](https://github.com/closed/issues/22)
+* 导出任务添加进度 ([b3d1e8b](https://github.com/Mario34/tesla-camera/commit/b3d1e8b80ab7622aeee345b09ce87787f0d5a772))
 
 
 
