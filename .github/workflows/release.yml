@@ -65,10 +65,12 @@ jobs:
           out-file-path: release-downloader
 
       - name: Init binaries
-        run:
-          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg" src-tauri/binaries/ffmpeg-aarch64-apple-darwin &
-          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg" src-tauri/binaries/ffmpeg-x86_64-apple-darwin &
+        run: |
+          chmod 777 "$GITHUB_WORKSPACE/release-downloader/ffmpeg"
+          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg" src-tauri/binaries/ffmpeg-aarch64-apple-darwin
+          cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg" src-tauri/binaries/ffmpeg-x86_64-apple-darwin
           cp -f "$GITHUB_WORKSPACE/release-downloader/ffmpeg.exe" src-tauri/binaries/ffmpeg-x86_64-pc-windows-msvc.exe
+          ls -l src-tauri/binaries
         shell: bash
 
       - name: Build the app
