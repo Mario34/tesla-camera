@@ -1,3 +1,7 @@
+## [1.1.2](https://github.com/Mario34/tesla-camera/compare/v1.1.1...v1.1.2) (2024-03-25)
+
+
+
 ## [1.1.1](https://github.com/Mario34/tesla-camera/compare/v1.0.0...v1.1.1) (2023-08-24)
 
 
