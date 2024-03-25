@@ -16,6 +16,9 @@
   "lint-staged": {
     "*.{js,ts,tsx}": "eslint --fix"
   },
+  "engines": {
+    "pnpm": ">=8.0.0"
+  },
   "dependencies": {
     "@fluentui/react-components": "^9.25.1",
     "@fluentui/react-icons": "^2.0.204",
