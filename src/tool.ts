@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
 export function useDelayPlay() {
-  const playTimerRef = useRef<NodeJS.Timer | null>(null)
+  const playTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function delayPlay(videoRef: HTMLVideoElement) {
     videoRef.pause()

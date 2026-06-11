@@ -3,108 +3,84 @@
   "build": {
     "beforeBuildCommand": "pnpm run build:tauri",
     "beforeDevCommand": "pnpm run dev",
-    "devPath": "http://localhost:6680",
-    "distDir": "../dist",
-    "withGlobalTauri": true
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:6680"
   },
-  "package": {
-    "productName": "TeslaCamera",
-    "version": "../package.json"
-  },
-  "tauri": {
-    "allowlist": {
-      "protocol": {
-        "all": true,
-        "asset": true,
-        "assetScope": ["**"]
-      },
-      "dialog": {
-        "open": true,
-        "message": true
-      },
-      "notification": {
-        "all": true
-      },
-      "fs": {
-        "readFile": true,
-        "readDir": true,
-        "scope": ["**"]
-      },
-      "path": {
-        "all": true
-      },
-      "shell": {
-        "all": true,
-        "execute": false,
-        "open": true,
-        "scope": [
-          { 
-            "name": "binaries/ffmpeg",
-            "sidecar": true,
-            "args": true
-          }
-        ],
-        "sidecar": true
-      }
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "",
+    "targets": "all",
+    "externalBin": [
+      "binaries/ffmpeg"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
     },
-    "bundle": {
-      "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+    "longDescription": "",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null
+    },
+    "resources": [
+      "icons/*"
+    ],
+    "shortDescription": "",
+    "linux": {
       "deb": {
         "depends": []
-      },
-      "externalBin": [
-        "binaries/ffmpeg"
-      ],
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "identifier": "mario34.top",
-      "longDescription": "",
-      "macOS": {
-        "entitlements": null,
-        "exceptionDomain": "",
-        "frameworks": [],
-        "providerShortName": null,
-        "signingIdentity": null
-      },
-      "resources": ["icons/*"],
-      "shortDescription": "",
-      "targets": "all",
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
     },
-    "security": {
-      "csp": "null"
-    },
+    "createUpdaterArtifacts": "v1Compatible"
+  },
+  "productName": "TeslaCamera",
+  "mainBinaryName": "TeslaCamera",
+  "version": "../package.json",
+  "identifier": "mario34.top",
+  "plugins": {
     "updater": {
-      "active": true,
-      "dialog": true,
-      "endpoints": [
-        "https://raw.githubusercontent.com/Mario34/gist/main/tesla-camera-update.json",
-        "https://gitee.com/mario34/tesla-camera/releases/download/v1-release-external/tesla-camera-update.json"
-      ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEZFODgwNkZFNEU4OTkxQTcKUldTbmtZbE8vZ2FJL2dQNjExUng4bzJiQS9ZVFRBYytjWTBJTE94ZE5kMUhUWEFaWjFKci9Ya28K",
       "windows": {
         "installMode": "passive"
-      }
-    },
+      },
+      "endpoints": [
+        "https://raw.githubusercontent.com/Mario34/gist/main/tesla-camera-update.json",
+        "https://gitee.com/mario34/tesla-camera/releases/download/v1-release-external/tesla-camera-update.json"
+      ]
+    }
+  },
+  "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "fullscreen": false,
         "minWidth": 1280,
         "minHeight": 800,
         "resizable": true,
-        "title": "TeslaCamera"
+        "title": "TeslaCamera",
+        "useHttpsScheme": true
       }
-    ]
+    ],
+    "security": {
+      "assetProtocol": {
+        "scope": [
+          "**"
+        ],
+        "enable": true
+      },
+      "csp": "null; connect-src ipc: http://ipc.localhost"
+    }
   }
 }

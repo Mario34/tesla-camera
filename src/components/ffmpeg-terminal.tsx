@@ -29,6 +29,10 @@ interface FfmpegTerminalProps {
 
 type CameraType = 'f' | 'b' | 'l' | 'r'
 
+function isCameraType(value: string): value is CameraType {
+  return ['f', 'b', 'l', 'r'].includes(value)
+}
+
 const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
   const [ffmpegPath, setFfmpegPath] = useState(localStorage.getItem('ffmpegPath') ?? '')
   const [sourceRoot, setSourceRoot] = useState(localStorage.getItem('sourceRoot') ?? '')
@@ -90,7 +94,11 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
               <RadioGroup
                 layout="horizontal"
                 value={camera}
-                onChange={(_, data) => setCamera(data.value)}
+                onChange={(_, data) => {
+                  if (isCameraType(data.value)) {
+                    setCamera(data.value)
+                  }
+                }}
               >
                 <Radio label="前" value="f" />
                 <Radio label="后" value="b" />
@@ -102,9 +110,9 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
               <Input
                 placeholder="请输入原始文件根目录（path/../TeslaCam）"
                 value={sourceRoot}
-                onInput={(e) => {
-                  localStorage.setItem('sourceRoot', e.target.value)
-                  setSourceRoot(e.target.value)
+                onChange={(_, data) => {
+                  localStorage.setItem('sourceRoot', data.value)
+                  setSourceRoot(data.value)
                 }}
               />
             </Field>
@@ -112,9 +120,9 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
               <Input
                 placeholder="请输入ffmpeg路径（path/../ffmpeg）"
                 value={ffmpegPath}
-                onInput={(e) => {
-                  localStorage.setItem('ffmpegPath', e.target.value)
-                  setFfmpegPath(e.target.value)
+                onChange={(_, data) => {
+                  localStorage.setItem('ffmpegPath', data.value)
+                  setFfmpegPath(data.value)
                 }}
               />
             </Field>
@@ -122,9 +130,9 @@ const FfmpegTerminal: React.FC<FfmpegTerminalProps> = (props) => {
               <Input
                 placeholder="导出文件地址（path/../export）"
                 value={exportPath}
-                onInput={(e) => {
-                  localStorage.setItem('exportPath', e.target.value)
-                  setExportPath(e.target.value)
+                onChange={(_, data) => {
+                  localStorage.setItem('exportPath', data.value)
+                  setExportPath(data.value)
                 }}
               />
             </Field>

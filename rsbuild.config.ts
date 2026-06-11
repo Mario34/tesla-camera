@@ -9,6 +9,8 @@ export default defineConfig({
     entry: {
       index: './src/main.tsx',
     },
+  },
+  resolve: {
     alias: {
       '@common': './src/common',
     },

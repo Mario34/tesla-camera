@@ -263,8 +263,4 @@ const Player: React.FC<React.PropsWithChildren<PlayerProps>> = (props) => {
   )
 }
 
-Player.defaultProps = {
-
-}
-
 export default Player

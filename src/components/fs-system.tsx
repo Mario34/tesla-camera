@@ -10,9 +10,9 @@ import {
   type OriginVideo, TypeEnum, type TauriFile, type EventJson,
   type FileData,
 } from '../model'
-import { convertFileSrc } from '@tauri-apps/api/tauri'
-import { open } from '@tauri-apps/api/dialog'
-import { readTextFile, readDir } from '@tauri-apps/api/fs'
+import { convertFileSrc } from '@tauri-apps/api/core'
+import { open } from '@tauri-apps/plugin-dialog'
+import { readTextFile, readDir, type DirEntry } from '@tauri-apps/plugin-fs'
 
 interface FsSystemProps {
   onAccess: (accessFile: OriginVideo[]) => void
@@ -44,15 +44,18 @@ function pathToType(path: string) {
   return TypeEnum.所有
 }
 
-function getDirFiles(files: TauriFile[]) {
+async function getDirFiles(dir: string): Promise<TauriFile[]> {
   const result: TauriFile[] = []
-  files.forEach(item => {
-    if (item.children?.length) {
-      result.push(...getDirFiles(item.children))
-    } else {
-      result.push(item)
+  const entries: DirEntry[] = await readDir(dir)
+  for (const entry of entries) {
+    const path = `${dir}/${entry.name}`
+    if (entry.isDirectory) {
+      result.push(...await getDirFiles(path))
     }
-  })
+    if (entry.isFile) {
+      result.push({ name: entry.name, path })
+    }
+  }
   return result
 }
 
@@ -110,8 +113,7 @@ const FsSystem: React.FC<FsSystemProps> = props => {
     if (!teslaCamDir) {
       return
     }
-    readDir(teslaCamDir as string, { recursive: true }).then(async res => {
-      const files = getDirFiles(res as TauriFile[])
+    getDirFiles(teslaCamDir as string).then(async files => {
       const videos = convertVideoFiles(files)
       const eventsFiles = files.filter(({ path }) => /.+event.json$/.test(path))
       let events: EventJson[] = []

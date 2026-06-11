@@ -55,16 +55,24 @@ const useStyles = makeStyles({
 })
 
 const MiniPlay: React.FC<MiniPlayProps> = (props) => {
+  const {
+    camera,
+    currentTime,
+    isActive,
+    onClick,
+    paused,
+    src,
+  } = props
   const styles = useStyles()
   const videoRef = useRef<HTMLVideoElement>(null)
   const playTimerRef = useRef<number | null>(null)
   useEffect(() => {
     if (!videoRef.current) return
-    if (props.paused && !videoRef.current.paused) {
+    if (paused && !videoRef.current.paused) {
       videoRef.current.pause()
     }
-    if (!props.paused && videoRef.current.paused) {
-      videoRef.current.currentTime = props.currentTime
+    if (!paused && videoRef.current.paused) {
+      videoRef.current.currentTime = currentTime
       if (playTimerRef.current) {
         clearTimeout(playTimerRef.current)
       }
@@ -73,36 +81,29 @@ const MiniPlay: React.FC<MiniPlayProps> = (props) => {
         playTimerRef.current = null
       }, 200)
     }
-  }, [props.paused])
+  }, [currentTime, paused])
   useEffect(() => {
     if (!videoRef.current) return
-    if (props.paused) {
-      videoRef.current.currentTime = props.currentTime
+    if (paused) {
+      videoRef.current.currentTime = currentTime
     }
-  }, [props.currentTime])
+  }, [currentTime, paused])
   return (
     <div
-      className={cls(styles.root, `c${props.camera}`)}
-      onClick={props.onClick}
+      className={cls(styles.root, `c${camera}`)}
+      onClick={onClick}
     >
-      <span className={styles.name}>{CameraEnum[props.camera]}</span>
+      <span className={styles.name}>{CameraEnum[camera]}</span>
       <video
         muted
-        className={cls(styles.video, { 'is-hidden': props.isActive })}
+        className={cls(styles.video, { 'is-hidden': isActive })}
         ref={videoRef}
-        src={props.src}
+        src={src}
       >
-        <source src={props.src} type="video/mp4" />
+        <source src={src} type="video/mp4" />
       </video>
     </div>
   )
-}
-
-MiniPlay.defaultProps = {
-  currentTime: 0,
-  camera: 0,
-  isActive: false,
-  paused: false,
 }
 
 export default MiniPlay
